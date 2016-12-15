@@ -1,0 +1,699 @@
+init python:
+
+    def stats_frame(name, level, hp, maxhp, **properties):
+
+        ui.frame(xfill=False, yminimum=None, **properties)
+
+        ui.hbox() # (name, "HP", bar) from (level, hp, maxhp)
+        ui.vbox() # name from ("HP", bar)
+
+        ui.text(name, size=20)
+
+        ui.hbox() # "HP" from bar
+        ui.text("HP", size=20)
+        ui.bar(maxhp, hp,
+               xmaximum=150)
+
+        ui.close()
+        ui.close()
+
+        ui.vbox() # Level from (hp/maxhp)
+
+        ui.text("Lv. %d" % level, xalign=0.5, size=20)
+        ui.text("%d/%d" % (hp, maxhp), xalign=0.5, size=20)
+
+        ui.close()
+        ui.close()
+        
+init 1 python:
+    from random import randint
+    chance = 0
+    def rand_enemy(chance):
+        chance = randint(1,3)
+        return chance
+
+# Declare images below this line, using the image statement.
+# eg. image eileen happy = "eileen_happy.png"
+image mewtwo:
+    xalign .98
+    yalign .02
+    "mewtwo.png"
+    
+image enemy_cyan:
+    xalign .98
+    yalign .02
+    "e2.png"
+    
+image enemy_green:
+    xalign .98
+    yalign .02
+    "e3.png"
+
+image venasaur:
+    xalign .02
+    yalign .02
+    "venasaur.png"
+    
+image charizard:
+    xalign .02
+    yalign .02
+    "charizard.png"
+    
+image blastoise:
+    xalign .02
+    yalign .02
+    "blastoise.png"
+    
+image poisoned:
+    "poison.png"
+
+#This label controls Enemy and Player stats' screen
+label fight:
+    
+    $ critroll = renpy.random.randint(1, 4)
+    
+    # Player/Fighter image
+    if pname == "[poke_1]":
+        show venasaur
+    elif pname == "[poke_2]":
+        show charizard
+    elif pname == "[poke_3]":
+        show blastoise
+    # Player Stats Frame
+    $ stats_frame(pname, plevel, php, pmaxhp, xalign=.02, yalign=.7)
+
+    # List of available enemies
+    if enemy == "Mewtwo":
+        $ ename = "Mewtwo"
+        $ elevel = 54
+        $ emaxhp = 156
+        $ e_skill1 = 18
+        $ e_skill2 = 78
+        $ e_skill3 = 16
+        $ e_skill4 = 18
+        $ d4roll = renpy.random.randint(1, 4)
+        
+        if combat_turn == 0:
+            $ ehp = emaxhp
+            
+        show mewtwo
+        
+    # Enemy Stats Frame
+    $ stats_frame(ename, elevel, ehp, emaxhp, xalign=.98, yalign=.7)
+    return
+
+label combat:
+    $ poke_1 = "Venasaur"
+    $ poke_2 = "Charizard"
+    $ poke_3 = "Blastoise"
+    
+    menu:
+        "Choose your Pokemon."
+        "[poke_1]":
+            jump pokemon_1
+        "[poke_2]":
+            jump pokemon_2
+        "[poke_3]":
+            jump pokemon_3
+
+label pokemon_1:
+    $ pname = "[poke_1]"
+    $ plevel = 50
+    $ pmaxhp = 122
+    
+    jump skillsetup1
+
+label pokemon_2:
+    $ pname = "[poke_2]"
+    $ plevel = 50
+    $ pmaxhp = 112
+    
+    jump skillsetup1
+
+label pokemon_3:
+    $ pname = "[poke_3]"
+    $ plevel = 50
+    $ pmaxhp = 118
+    
+    jump skillsetup1
+
+label skillsetup1:
+    if pname == "[poke_1]":
+        menu:
+            "Select first skill."
+            "Energy Ball":
+                $ skill_1 = "Energy Ball"
+                $ skill_1_dam = 16
+                jump skillsetup2
+            "Solar Beam":
+                $ skill_1 = "Solar Beam"
+                $ skill_1_dam = 24
+                jump skillsetup2
+            "Giga Drain":
+                $ skill_1 = "Giga Drain"
+                $ skill_1_dam = 12
+                jump skillsetup2
+    
+    elif pname == "[poke_2]":
+        menu:
+            "Select first skill."
+            "Flamethrower":
+                $ skill_1 = "flamethrower"
+                $ skill_1_dam = 9
+                jump skillsetup2
+            "Blast Burn":
+                $ skill_1 = "blastburn"
+                $ skill_1_dam = 15
+                jump skillsetup2
+            "Fire Blast":
+                $ skill_1 = "fireblast"
+                $ skill_1_dam = 12
+                jump skillsetup2
+    
+    elif panme == "[poke_3]":
+        menu:
+            "Select first skill."
+            "Surf":
+                $ skill_1 = "surf"
+                $ skill_1_dam = 9
+                jump skillsetup2
+            "Hydro Pump":
+                $ skill_1 = "hydropump"
+                $ skill_1_dam = 12
+                jump skillsetup2
+            "Hydro Cannon":
+                $ skill_1 = "hydrocannon"
+                $ skill_1_dam = 15
+                jump skillsetup2
+
+label skillsetup2:
+    if pname == "[poke_1]":
+        menu:
+            "Select second skill."
+            "Sludge Bomb":
+                $ skill_2 = "Sludge Bomb"
+                $ nopoison = True
+                $ skill_2_dam = 18
+                jump skillsetup3
+            "Earthquake":
+                $ skill_2 = "Earthquake"
+                $ skill_2_dam = 20
+                jump skillsetup3
+            "Giga Impact":
+                $ skill_2 = "Giga Impact"
+                $ skill_2_dam = 30
+                jump skillsetup3
+    
+    elif pname == "[poke_2]":
+        menu:
+            "Select second skill."
+            "Dragon Claw":
+                $ skill_2 = "dragonclaw"
+                $ skill_2_dam = 8
+                jump skillsetup3
+            "Air Slash":
+                $ skill_2 = "airslash"
+                $ skill_2_dam = 7
+                jump skillsetup3
+            "Rock Slide":
+                $ skill_2 = "rockslide"
+                $ skill_2_dam = 7
+                jump skillsetup3
+    
+    elif panme == "[poke_3]":
+        menu:
+            "Select second skill."
+            "Ice Beam":
+                $ skill_2 = "icebeam"
+                $ skill_2_dam = 9
+                jump skillsetup3
+            "Flash Cannon":
+                $ skill_2 = "flashcannon"
+                $ skill_2_dam = 8
+                jump skillsetup3
+            "Focus Blast":
+                $ skill_2 = "focusblast"
+                $ skill_2_dam = 15
+                jump skillsetup3
+
+label skillsetup3:
+    if pname == "[poke_1]":
+        menu:
+            "Select third skill."
+            "Toxic":
+                $ skill_3 = "Toxic"
+                jump skillsetup4
+            "Sleep Powder":
+                $ skill_3 = "Sleep Powder"
+                jump skillsetup4
+            "Synthesis":
+                $ skill_3 = "Synthesis"
+                $ skill_3_dam = 61
+                jump skillsetup4
+    
+    elif pname == "[poke_2]":
+        menu:
+            "Select third skill."
+            "Roost":
+                $ skill_3 = "roost"
+                jump skillsetup4
+            "Swagger":
+                $ skill_3 = "swagger"
+                jump skillsetup4
+            "Dragon Dance":
+                $ skill_3 = "dragondance"
+                jump skillsetup4
+    
+    elif panme == "[poke_3]":
+        menu:
+            "Select third skill."
+            "Refresh":
+                $ skill_3 = "refresh"
+                jump skillsetup4
+            "Iron Defense":
+                $ skill_3 = "irondefense"
+                jump skillsetup4
+            "Aqua Ring":
+                $ skill_3 = "aquaring"
+                jump skillsetup4
+
+label skillsetup4:
+    if pname == "[poke_1]":
+        menu:
+            "Select fourth skill."
+            "Venoshock":
+                $ skill_4 = "Venoshock"
+                $ skill_4_dam = 12
+                jump battle_setup
+            "Curse":
+                $ skill_4 = "Curse"
+                jump battle_setup
+            "Leech Seed":
+                $ skill_4 = "Leech Seed"
+                jump battle_setup
+    
+    elif pname == "[poke_2]":
+        menu:
+            "Select fourth skill."
+            "Iron Tail":
+                $ skill_4 = "irontail"
+                $ skill_4_dam = 10
+                jump battle_setup
+            "Crunch":
+                $ skill_4 = "crunch"
+                $ skill_4_dam = 8
+                jump battle_setup
+            "Hyper Beam":
+                $ skill_4 = "hyperbeam"
+                $ skill_4_dam = 15
+                jump battle_setup
+    
+    elif panme == "[poke_3]":
+        menu:
+            "Select fourth skill."
+            "Dark Pulse":
+                $ skill_4 = "darkpulse"
+                $ skill_4_dam = 9
+                jump battle_setup
+            "Signal Beam":
+                $ skill_4 = "signalbeam"
+                $ skill_4_dam = 7
+                jump battle_setup
+            "Zen Headbutt":
+                $ skill_4 = "zenheadbutt"
+                $ skill_4_dam = 8
+                jump battle_setup
+
+label battle_setup:
+    $ combat_turn = 0
+    $ emaxhp = 154
+    $ ename= "None"
+    $ enemy = "Mewtwo"
+    $ php = pmaxhp
+    $ ehp = emaxhp
+    jump battle
+
+label battle:
+    call fight
+    $ combat_turn += 1
+    
+    menu:
+        "What should [poke_1] do?"
+        "[skill_1]":
+            jump use_skill1
+        "[skill_2]":
+            jump use_skill2
+        "[skill_3]":
+            jump use_skill3
+        "[skill_4]":
+            jump use_skill4
+
+label use_skill1:
+    call fight
+    "[poke_1] used [skill_1]!"
+    if critroll == 2:
+        $ ehp -= skill_1_dam*2
+        $ crit = True
+        call fight
+        "Critical hit!"
+    else:
+        $ ehp -= skill_1_dam
+        $ crit = False
+    call fight
+    
+    if skill_1 == "Giga Drain":
+        if crit == False:
+            if php >= pmaxhp-(skill_1_dam/2):
+                $ php = pmaxhp
+            else:
+                if php <= pmaxhp-(skill_1_dam/2):
+                    $ php += skill_1_dam/2
+        elif crit == True:
+            if php >= pmaxhp-(skill_1_dam):
+                $ php = pmaxhp
+            else:
+                if php <= pmaxhp-(skill_1_dam):
+                    $ php += skill_1_dam
+        "Mewtwo had its energy drained!"
+    call fight
+    
+    if ehp <= 0:
+        $ ehp = 0
+        call fight
+        "Enemy Mewtwo fainted!"
+        jump e_defeat
+        
+    if d4roll == 2:
+        call fight
+        "Mewtwo uses Recover!"
+        if ehp >= 78:
+            $ ehp = emaxhp
+        else:
+            $ ehp += e_skill2
+        call fight
+        "Mewtwo's HP was restored."
+    elif d4roll == 1:
+        call fight
+        "Mewtwo uses Psychic!"
+        if critroll == 2:
+            $ php -= e_skill1*2
+            call fight
+            "Critical hit!"
+        else:
+            $ php -= e_skill1
+    elif d4roll == 3:
+        call fight
+        "Mewtwo uses Shadow Ball!"
+        if critroll == 2:
+            $ php -= e_skill3*2
+            call fight
+            "Critical hit!"
+        else:
+            $ php -= e_skill3
+    elif d4roll == 4:
+        call fight
+        "Mewtwo uses Aura Sphere!"
+        if critroll == 2:
+            $ php -= e_skill4*2
+            call fight
+            "Critical hit!"
+        else:
+            $ php -= e_skill4
+    
+    if nopoison == False:
+        call fight
+        $ ehp -= 1+(combat_turn)
+        "Mewtwo was hurt from the poison!"
+    
+    if php <= 0:
+        $ php = 0
+        call fight
+        "[poke_1] fainted!"
+        jump p_defeat
+    
+    if ehp <= 0:
+        $ ehp = 0
+        call fight
+        "Enemy Mewtwo fainted!"
+        
+        jump e_defeat
+        
+    else:
+        call fight
+        jump battle
+
+label use_skill2:
+    call fight
+    "[poke_1] used [skill_2]!"
+    if critroll == 2:
+        $ ehp -= skill_2_dam*2
+        call fight
+        "Critical hit!"
+    else:
+        $ ehp -= skill_2_dam
+    call fight
+    
+    if skill_2 == "Sludge Bomb":
+        if nopoison == True:
+            $ d10roll = renpy.random.randint(1, 5)
+            if d10roll == 3:
+                $ nopoison = False
+                show poisoned
+                "Mewtwo was badly poisoned!"
+                call fight
+    
+    if ehp <= 0:
+        $ ehp = 0
+        call fight
+        "Enemy Mewtwo fainted!"
+        jump e_defeat
+    
+    if d4roll == 2:
+        call fight
+        "Mewtwo uses Recover!"
+        if ehp >= 78:
+            $ ehp = emaxhp
+        else:
+            $ ehp += e_skill2
+        call fight
+        "Mewtwo's HP was restored."
+    elif d4roll == 1:
+        call fight
+        "Mewtwo uses Psychic!"
+        if critroll == 2:
+            $ php -= e_skill1*2
+            call fight
+            "Critical hit!"
+        else:
+            $ php -= e_skill1
+    elif d4roll == 3:
+        call fight
+        "Mewtwo uses Shadow Ball!"
+        if critroll == 2:
+            $ php -= e_skill3*2
+            call fight
+            "Critical hit!"
+        else:
+            $ php -= e_skill3
+    elif d4roll == 4:
+        call fight
+        "Mewtwo uses Aura Sphere!"
+        if critroll == 2:
+            $ php -= e_skill4*2
+            call fight
+            "Critical hit!"
+        else:
+            $ php -= e_skill4
+        
+    if nopoison == False:
+        call fight
+        $ ehp -= 1+(combat_turn)
+        "Mewtwo was hurt from the poison!"
+        
+    if ehp <= 0:
+        $ ehp = 0
+        call fight
+        "Enemy Mewtwo fainted!"
+        jump e_defeat
+        
+    if php <= 0:
+        $ php = 0
+        call fight
+        "[poke_1] fainted!"
+        jump p_defeat
+        
+    else:
+        call fight
+        jump battle
+        
+label use_skill3:
+    call fight
+    "[poke_1] used [skill_3]!"
+    call fight
+    
+    if skill_3 == "Synthesis":
+        if php >= 61:
+            $ php = pmaxhp
+        else:
+            $ php += skill_3_dam
+        "Venasaur's HP was restored."
+    call fight
+    
+    if ehp <= 0:
+        $ ehp = 0
+        call fight
+        "Enemy Mewtwo fainted!"
+        jump e_defeat
+                
+    if d4roll == 2:
+        call fight
+        "Mewtwo uses Recover!"
+        if ehp >= 78:
+            $ ehp = emaxhp
+        else:
+            $ ehp += e_skill2
+        call fight
+        "Mewtwo's HP was restored."
+    elif d4roll == 1:
+        call fight
+        "Mewtwo uses Psychic!"
+        if critroll == 2:
+            $ php -= e_skill1*2
+            call fight
+            "Critical hit!"
+        else:
+            $ php -= e_skill1
+    elif d4roll == 3:
+        call fight
+        "Mewtwo uses Shadow Ball!"
+        if critroll == 2:
+            $ php -= e_skill3*2
+            call fight
+            "Critical hit!"
+        else:
+            $ php -= e_skill3
+    elif d4roll == 4:
+        call fight
+        "Mewtwo uses Aura Sphere!"
+        if critroll == 2:
+            $ php -= e_skill4*2
+            call fight
+            "Critical hit!"
+        else:
+            $ php -= e_skill4
+    
+    if nopoison == False:
+        call fight
+        $ ehp -= 1+(combat_turn)
+        "Mewtwo was hurt from the poison!"
+        
+    if php <= 0:
+        $ php = 0
+        call fight
+        "[poke_1] fainted!"
+        jump p_defeat
+    
+    if ehp <= 0:
+        $ ehp = 0
+        call fight
+        "Enemy Mewtwo fainted!"
+        jump e_defeat
+        
+    else:
+        call fight
+        jump battle
+        
+label use_skill4:
+    call fight
+    "[poke_1] used [skill_4]!"
+    
+    if skill_4 == "Venoshock":
+        if nopoison == False:
+            if critroll == 2:
+                $ ehp -= skill_4_dam*4
+                call fight
+                "Critical hit!"
+            else:
+                $ ehp -= skill_4_dam*2
+        elif nopoison == True:
+            if critroll == 2:
+                $ ehp -= skill_4_dam*2
+                call fight
+                "Critical hit!"
+            else:
+                $ ehp -= skill_4_dam
+    call fight
+    
+    if ehp <= 0:
+        $ ehp = 0
+        call fight
+        "Enemy Mewtwo fainted!"
+        jump e_defeat
+                
+    if d4roll == 2:
+        call fight
+        "Mewtwo uses Recover!"
+        if ehp >= 78:
+            $ ehp = emaxhp
+        else:
+            $ ehp += e_skill2
+        call fight
+        "Mewtwo's HP was restored."
+    elif d4roll == 1:
+        call fight
+        "Mewtwo uses Psychic!"
+        if critroll == 2:
+            $ php -= e_skill1*2
+            call fight
+            "Critical hit!"
+        else:
+            $ php -= e_skill1
+    elif d4roll == 3:
+        call fight
+        "Mewtwo uses Shadow Ball!"
+        if critroll == 2:
+            $ php -= e_skill3*2
+            call fight
+            "Critical hit!"
+        else:
+            $ php -= e_skill3
+    elif d4roll == 4:
+        call fight
+        "Mewtwo uses Aura Sphere!"
+        if critroll == 2:
+            $ php -= e_skill4*2
+            call fight
+            "Critical hit!"
+        else:
+            $ php -= e_skill4
+    
+    if nopoison == False:
+        call fight
+        $ ehp -= 1+(combat_turn)
+        "Mewtwo was hurt from the poison!"
+        
+    if php <= 0:
+        $ php = 0
+        call fight
+        "[poke_1] fainted!"
+        jump p_defeat
+    
+    if ehp <= 0:
+        $ ehp = 0
+        call fight
+        "Enemy Mewtwo fainted!"
+        jump e_defeat
+        
+    else:
+        call fight
+        jump battle
+        
+label p_defeat:
+    scene black with dissolve
+    centered "You blacked out!"
+    $ renpy.full_restart()
+    
+label e_defeat:
+    scene black with dissolve
+    centered "You win! Do you want a cookie?"
+    $ renpy.full_restart()
