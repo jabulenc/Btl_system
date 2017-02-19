@@ -42,11 +42,17 @@ init:
     $ sleepCounterP = 3
     $ sleepingP = False
     $ pauseGame = False
+    $ partyPokemon = None
+    $ switchPoke = False
     
     call storage
     
     #Dictionaries stored in List for flexibility/ease of use
-    $ pokelist = [Vena, CharZ, Blast]
+    
+    if partyPokemon is None:
+        $ pokelist = [Vena, CharZ, Blast]
+    else:
+        $ pokelist = partyPokemon
     $ ePoke = [Mew2, CharZ]
     
     $ combat_turn = 0
@@ -143,8 +149,15 @@ label pokemon:
     #Setting up all data with the pokemon's "Current HP"
     
     if pauseGame:
-        "Game is paused because Opponent lost pokemon"
-        $ pauseGame = False
+        "[ename] has fainted!"
+        menu:
+            "Would you like to change Pokemon?"
+            "[pname]'s done enough! Let's switch them out!":
+                $ pauseGame = False
+                jump combat
+            "[pname]'s still got fight left!":
+                $ pauseGame = False
+                jump battle
         jump pokemon
     else:
         #HP

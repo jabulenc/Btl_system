@@ -33,6 +33,7 @@ label storage:
     $ Crunch = ["Crunch", 24, "SpecDD_Opp", "Dark"]
     $ BodySlam = ["Body Slam", 25, "Prlz", "Normal"]
     $ Thunderbolt = ["Thunder Bolt", 25, "Prlz", "Electric"]
+    $ Ember = ["Ember", 20, "None", "Fire"]
     
     #Marill family skills
     $ Tackle = ["Tackle", 25, "None", "Normal"]
